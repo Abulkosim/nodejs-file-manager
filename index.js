@@ -1,7 +1,7 @@
 import { parseArgs } from 'node:util';
 import { homedir } from 'os';
 import { createInterface } from 'readline/promises';
-import { handleCommand } from './src/cli';
+import { handleCommand } from './src/cli.js';
 
 const { values } = parseArgs({
   options: {
