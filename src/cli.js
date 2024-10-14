@@ -1,6 +1,7 @@
 import { up, cd, ls } from './navigation.js';
 import { cat, add, rn, cp, mv, rm } from './fileOperations.js';
 import { getEOL, getCPUs, getHomeDir, getUsername, getArchitecture } from './osInfo.js';
+import { hash } from './hash.js';
 
 export async function handleCommand(input) {
   const [command, ...args] = input.trim().split(' ');
@@ -36,18 +37,22 @@ export async function handleCommand(input) {
         break;
       case 'os':
         if (args[0] === '--EOL') {
-          await getEOL();
+           getEOL();
         } else if (args[0] === '--cpus') {
-          await getCPUs();
+           getCPUs();
         } else if (args[0] === '--homedir') {
-          await getHomeDir();
+           getHomeDir();
         } else if (args[0] === '--username') {
-          await getUsername();
+           getUsername();
         } else if (args[0] === '--architecture') {
-          await getArchitecture();
+           getArchitecture();
         } else {
           console.log('Invalid input');
         }
+        break;
+      
+      case 'hash':
+        await hash(args[0]);
         break;
       default:
         console.log('Invalid input');
