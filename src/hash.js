@@ -1,10 +1,10 @@
 import crypto from 'crypto';
 import fs from 'fs';
-import path from 'path';
+import { getFullPath } from './utils.js';
 
 export function hash(fileName) {
   return new Promise((resolve, reject) => {
-    const fullPath = path.resolve(process.cwd(), fileName);
+    const fullPath = getFullPath(fileName);
     const hash = crypto.createHash('sha256');
     const stream = fs.createReadStream(fullPath);
 

@@ -1,9 +1,6 @@
 import fs from 'fs';
 import zlib from 'zlib';
-import { promisify } from 'util';
-
-const brotliCompress = promisify(zlib.brotliCompress);
-const brotliDecompress = promisify(zlib.brotliDecompress);
+import { logSuccess, logError } from './utils.js';
 
 export function compress(source, destination) {
   return new Promise((resolve, reject) => {
@@ -20,14 +17,16 @@ export function compress(source, destination) {
       .pipe(brotli)
       .pipe(writeStream)
       .on('finish', () => {
-        console.log(`\x1b[32mFile '${source}' compressed successfully.\x1b[0m`);
+        logSuccess(`File '${source}' compressed successfully.`);
         resolve();
       })
       .on('error', (error) => {
+        logError('Operation failed');
         reject(new Error('Operation failed'));
       });
 
     readStream.on('error', (error) => {
+      logError('Operation failed');
       reject(new Error('Operation failed'));
     });
   });
@@ -48,14 +47,16 @@ export function decompress(source, destination) {
       .pipe(brotli)
       .pipe(writeStream)
       .on('finish', () => {
-        console.log(`\x1b[32mFile '${source}' decompressed successfully.\x1b[0m`);
+        logSuccess(`File '${source}' decompressed successfully.`);
         resolve();
       })
       .on('error', (error) => {
+        logError('Operation failed');
         reject(new Error('Operation failed'));
       });
 
     readStream.on('error', (error) => {
+      logError('Operation failed');
       reject(new Error('Operation failed'));
     });
   });

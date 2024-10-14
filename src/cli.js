@@ -3,6 +3,8 @@ import { cat, add, rn, cp, mv, rm } from './fileOperations.js';
 import { getEOL, getCPUs, getHomeDir, getUsername, getArchitecture } from './osInfo.js';
 import { hash } from './hash.js';
 import { compress, decompress } from './compression.js';
+import { logError } from './utils.js';
+
 export async function handleCommand(input) {
   const [command, ...args] = input.trim().split(' ');
 
@@ -17,7 +19,7 @@ export async function handleCommand(input) {
       case 'ls':
         await ls();
         break;
-        
+
       case 'cat':
         await cat(args[0]);
         break;
@@ -49,7 +51,7 @@ export async function handleCommand(input) {
         } else if (args[0] === '--architecture') {
            getArchitecture();
         } else {
-          console.log('Invalid input');
+          logError('Invalid input');
         }
         break;
       
@@ -65,9 +67,9 @@ export async function handleCommand(input) {
         break;
 
       default:
-        console.log('Invalid input');
+        logError('Invalid input');
     }
   } catch (error) {
-    console.log('Operation failed');
+    logError('Operation failed');
   }
 }

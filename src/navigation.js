@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'path';
+import { getFullPath, logError } from './utils.js';
 
 export async function up() {
   const currentDir = process.cwd();
@@ -12,11 +13,11 @@ export async function up() {
 
 export async function cd(targetPath) {
   try {
-    const resolvedPath = path.resolve(process.cwd(), targetPath);
+    const resolvedPath = getFullPath(targetPath);
     await fs.access(resolvedPath);
     process.chdir(resolvedPath);
   } catch (error) {
-    throw new Error('Invalid directory');
+    logError('Invalid directory');
   }
 }
 
@@ -49,6 +50,6 @@ export async function ls() {
     console.log('-'.repeat(typeColumnWidth + nameColumnWidth));
 
   } catch (error) {
-    throw new Error('Failed to list directory contents');
+    logError('Failed to list directory contents');
   }
 }

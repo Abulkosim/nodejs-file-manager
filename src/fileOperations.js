@@ -1,7 +1,7 @@
 import { createReadStream, createWriteStream } from 'fs';
 import { promises as fs } from 'fs'
 import { access } from 'fs/promises';
-import path from 'path';
+import { getFullPath, logError, logSuccess } from './utils.js';
 
 export async function cat(filePath) {
   try {
@@ -9,7 +9,7 @@ export async function cat(filePath) {
       throw new Error('File path is not provided');
     }
 
-    const fullPath = path.resolve(process.cwd(), filePath);
+    const fullPath = getFullPath(filePath);
 
     await access(fullPath);
 
@@ -40,9 +40,9 @@ export async function add(fileName) {
       throw new Error('File name is not provided');
     }
 
-    const fullPath = path.resolve(process.cwd(), fileName);
+    const fullPath = getFullPath(fileName);
     await fs.writeFile(fullPath, '');
-    console.log(`\x1b[32mFile '${fileName}' created successfully.\x1b[0m`);
+    logSuccess(`File '${fileName}' created successfully.`);
   } catch (error) {
     throw new Error('Operation failed');
   }
@@ -54,11 +54,11 @@ export async function rn(oldName, newName) {
       throw new Error('Invalid input');
     }
 
-    const oldPath = path.resolve(process.cwd(), oldName);
-    const newPath = path.resolve(process.cwd(), newName);
+    const oldPath = getFullPath(oldName);
+    const newPath = getFullPath(newName);
 
     await fs.rename(oldPath, newPath);
-    console.log(`\x1b[32mFile '${oldName}' renamed to '${newName}' successfully.\x1b[0m`);
+    logSuccess(`File '${oldName}' renamed to '${newName}' successfully.`);
   } catch (error) {
     throw new Error('Operation failed');
   }
@@ -70,8 +70,8 @@ export async function cp(source, destination) {
       throw new Error('Invalid input');
     }
 
-    const sourcePath = path.resolve(process.cwd(), source);
-    const destinationPath = path.resolve(process.cwd(), destination);
+    const sourcePath = getFullPath(source);
+    const destinationPath = getFullPath(destination);
 
     await fs.access(sourcePath);
 
@@ -82,7 +82,7 @@ export async function cp(source, destination) {
 
     return new Promise((resolve, reject) => {
       writeStream.on('finish', () => {
-        console.log(`\x1b[32mFile '${source}' copied to '${destination}' successfully.\x1b[0m`);
+        logSuccess(`File '${source}' copied to '${destination}' successfully.`);
         resolve();
       });
 
@@ -105,8 +105,8 @@ export async function mv(source, destination) {
       throw new Error('Invalid input');
     }
 
-    const sourcePath = path.resolve(process.cwd(), source);
-    const destinationPath = path.resolve(process.cwd(), destination);
+    const sourcePath = getFullPath(source);
+    const destinationPath = getFullPath(destination);
 
     await fs.access(sourcePath);
 
@@ -119,7 +119,7 @@ export async function mv(source, destination) {
       writeStream.on('finish', async () => {
         try {
           await fs.unlink(sourcePath);
-          console.log(`\x1b[32mFile '${source}' moved to '${destination}' successfully.\x1b[0m`);
+          logSuccess(`File '${source}' moved to '${destination}' successfully.`);
           resolve()
         } catch (error) {
           reject(new Error('Operation failed'));
@@ -145,10 +145,10 @@ export async function rm(fileName) {
       throw new Error('Invalid input');
     }
 
-    const fullPath = path.resolve(process.cwd(), fileName);
+    const fullPath = getFullPath(fileName);
     await fs.access(fullPath);
     await fs.unlink(fullPath);
-    console.log(`\x1b[32mFile '${fileName}' removed successfully.\x1b[0m`);
+    logSuccess(`File '${fileName}' removed successfully.`);
   } catch (error) {
     if (error.code === 'ENOENT') {
       throw new Error('File not found');
