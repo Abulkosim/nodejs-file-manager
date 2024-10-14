@@ -30,12 +30,24 @@ export async function ls() {
       }
 
       return a.isDirectory() ? -1 : 1;
-    })
+    });
 
-    console.log('Types\tName');
+    const typeColumnWidth = 6;
+    const nameColumnWidth = 30;
+
+    console.log('\x1b[1m' + 'Type'.padEnd(typeColumnWidth) + 'Name'.padEnd(nameColumnWidth) + '\x1b[0m');
+    console.log('-'.repeat(typeColumnWidth + nameColumnWidth));
+
     for (const file of sortedFiles) {
-      console.log(`${file.isDirectory() ? 'DIR' : 'FILE'}\t${file.name}`);
+      const type = file.isDirectory() ? '\x1b[34mDIR\x1b[0m ' : '\x1b[32mFILE \x1b[0m';
+      const name = file.name.length > nameColumnWidth - 3
+        ? file.name.slice(0, nameColumnWidth - 3) + '...'
+        : file.name;
+      console.log(type.padEnd(typeColumnWidth) + name.padEnd(nameColumnWidth));
     }
+
+    console.log('-'.repeat(typeColumnWidth + nameColumnWidth));
+
   } catch (error) {
     throw new Error('Failed to list directory contents');
   }
