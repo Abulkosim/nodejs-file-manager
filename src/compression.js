@@ -21,7 +21,6 @@ export function compress(source, destination) {
         resolve();
       })
       .on('error', (error) => {
-        logError('Operation failed');
         reject(new Error('Operation failed'));
       });
 
@@ -51,12 +50,10 @@ export function decompress(source, destination) {
         resolve();
       })
       .on('error', (error) => {
-        logError('Operation failed');
         reject(new Error('Operation failed'));
       });
 
     readStream.on('error', (error) => {
-      logError('Operation failed');
       reject(new Error('Operation failed'));
     });
   });
