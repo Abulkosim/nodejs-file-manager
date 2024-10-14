@@ -2,7 +2,7 @@ import { up, cd, ls } from './navigation.js';
 import { cat, add, rn, cp, mv, rm } from './fileOperations.js';
 import { getEOL, getCPUs, getHomeDir, getUsername, getArchitecture } from './osInfo.js';
 import { hash } from './hash.js';
-
+import { compress, decompress } from './compression.js';
 export async function handleCommand(input) {
   const [command, ...args] = input.trim().split(' ');
 
@@ -17,6 +17,7 @@ export async function handleCommand(input) {
       case 'ls':
         await ls();
         break;
+        
       case 'cat':
         await cat(args[0]);
         break;
@@ -35,6 +36,7 @@ export async function handleCommand(input) {
       case 'rm': 
         await rm(args[0]);
         break;
+
       case 'os':
         if (args[0] === '--EOL') {
            getEOL();
@@ -54,6 +56,14 @@ export async function handleCommand(input) {
       case 'hash':
         await hash(args[0]);
         break;
+      
+      case 'compress':
+        await compress(args[0], args[1]);
+        break;
+      case 'decompress':
+        await decompress(args[0], args[1]);
+        break;
+
       default:
         console.log('Invalid input');
     }
